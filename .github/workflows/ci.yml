@@ -22,7 +22,9 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Start PostGIS + pgvector database
+        working-directory: .
         run: |
+          set -euo pipefail
           docker build -t joxera-db:ci -f docker/db/Dockerfile docker/db
           docker run -d --name postgres \
             -e POSTGRES_DB=joxera_test \
@@ -31,10 +33,19 @@ jobs:
             -p 5432:5432 \
             -v "${{ github.workspace }}/docker/db/init:/docker-entrypoint-initdb.d:ro" \
             joxera-db:ci
+          ready=0
           for i in $(seq 1 30); do
-            docker exec postgres pg_isready -U joxera -d joxera_test && break
+            if docker exec postgres pg_isready -U joxera -d joxera_test; then
+              ready=1
+              break
+            fi
             sleep 2
           done
+          if [ "$ready" -ne 1 ]; then
+            echo "PostgreSQL failed to become ready"
+            docker logs postgres
+            exit 1
+          fi
 
       - uses: actions/setup-python@v5
         with:
@@ -80,10 +91,11 @@ jobs:
           GDAL_LIBRARY_PATH: /usr/lib/x86_64-linux-gnu/libgdal.so
           GEOS_LIBRARY_PATH: /usr/lib/x86_64-linux-gnu/libgeos_c.so
           ALLOW_KYC_SIMULATION: "True"
-        run: pytest --cov=. --cov-report=term-missing
+        run: pytest --cov=. --cov-report=term-missing -q
 
       - name: Stop database
         if: always()
+        working-directory: .
         run: docker rm -f postgres || true
 
   frontend-lint-build:

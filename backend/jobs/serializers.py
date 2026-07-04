@@ -34,7 +34,7 @@ class ListingSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("id", "owner_handle", "skill_tags", "distance_km", "created_at", "updated_at")
+        read_only_fields = ("id", "owner", "owner_handle", "skill_tags", "distance_km", "created_at", "updated_at")
 
     def validate(self, attrs):
         mode = attrs.get("mode", getattr(self.instance, "mode", None))
