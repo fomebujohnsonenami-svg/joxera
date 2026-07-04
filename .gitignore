@@ -30,3 +30,9 @@ Thumbs.db
 # Docker volumes (local)
 postgres_data/
 redis_data/
+.env.*
+*.env
+credentials.json
+*.pem
+*.key
+.credentials
