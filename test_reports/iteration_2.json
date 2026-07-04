@@ -1,0 +1,75 @@
+{
+  "summary": "Full regression on Joxera vibrant landing page + Emergent Google auth for the new preview host (7a29f715-...). All 5 backend contract tests pass and all 15 landing-page/auth playwright checks pass. Two critical environment-config regressions were fixed before testing (ALLOWED_HOSTS + missing frontend VITE_API_URL) — see rca. Post-fix, authenticated users correctly see the sign-in card and Google buttons hidden.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Landing / Auth pages", "issues": ["Non-blocking pageerror 'Incorrect locale information provided' (also flagged in iteration_1). Likely Intl API called with an unsupported/empty locale — recommend try/catch fallback to 'en-US'."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/tests/test_landing_google_auth_e2e.py",
+    "/app/test_reports/pytest/landing_google_auth_e2e.xml"
+  ],
+  "action_items": [
+    "Persist the two env fixes into repo/setup so they survive fresh spins: (a) backend/.env ALLOWED_HOSTS should include the preview host (or wildcard '.preview.emergentagent.com') and (b) frontend/.env should provide VITE_API_URL pointing at the preview backend, e.g. https://<host>/api. Without these, both frontend->backend calls and Django host validation break on any new preview URL.",
+    "Investigate the persistent 'Incorrect locale information provided' pageerror thrown on landing and /auth/login (likely Intl.* called with an unsupported locale via i18n). Non-blocking but pollutes console/Sentry."
+  ],
+  "critical_code_review_comments": [
+    "frontend/src/services/api/client.ts falls back to 'http://localhost:8000/api' when VITE_API_URL is unset — that fallback is unreachable from the deployed preview URL and produces silent failures (login form shows 'Something went wrong' with no useful error). Consider throwing at startup when VITE_API_URL is missing, or defaulting to same-origin '/api' so the app degrades gracefully.",
+    "backend/.env has no ALLOWED_HOSTS entry — settings.py defaults to only 'localhost,127.0.0.1', so every external request to the preview URL was rejected with DisallowedHost before my fix. Recommend adding ALLOWED_HOSTS to setup_env.sh or defaulting to '*' in DEBUG.",
+    "GoogleLoginButton assigns window.location.href — fine, but it also fires on every click without a debounce; double-clicks queue two navigations (mostly harmless because the browser only honours the last).",
+    "Landing page uses `useLocationContext()` which is called before any auth check; if the location context throws, the whole landing page dies — worth wrapping in an error boundary.",
+    "GoogleSessionView still stores JWTs client-side in localStorage after callback (XSS-vulnerable); pre-existing, but worth noting again."
+  ],
+  "updated_files": [
+    "/app/backend/.env",
+    "/app/frontend/.env",
+    "/app/tests/test_landing_google_auth_e2e.py"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "talent.demo@joxera.test / DemoPass123! (talent); employer.demo@joxera.test / DemoPass123! (employer). Matches /app/memory/test_credentials.md.",
+  "seed_data_creation": "None. Backend tests only exercise idempotent read/login endpoints; no rows created.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Preview URL is https://7a29f715-0a3a-453f-a736-5a71dd94bc81.preview.emergentagent.com. Backend runs uvicorn on :8001, frontend Vite on :3000 (supervisor). Backend rejects hosts not in ALLOWED_HOSTS — that env var was empty in this environment and had to be added to /app/backend/.env (see rca). Frontend has no .env in the repo so VITE_API_URL was undefined and defaulted to http://localhost:8000/api — I created /app/frontend/.env pointing at the preview /api. New tests live at /app/tests/test_landing_google_auth_e2e.py (kept out of /app/backend/tests/ because that dir's conftest.py needs pytest-django which isn't installed). Run: `cd /app && python -m pytest tests/test_landing_google_auth_e2e.py -v`. Google OAuth cannot be end-to-end tested (real popup); we only assert the button navigates to https://auth.emergentagent.com/?redirect=<encoded /auth/callback>.",
+  "verified_contracts": {
+    "GET /api/health/": "200 {status:ok}",
+    "POST /api/auth/login/ (talent demo)": "200 {access, refresh, user}",
+    "GET /api/auth/me/ (Bearer)": "200 {email: talent.demo@joxera.test}",
+    "POST /api/auth/google/session/ (no header)": "400 {detail: 'Missing session id.'}",
+    "POST /api/auth/google/session/ (invalid header)": "401 {detail: 'Invalid or expired session.'}"
+  },
+  "verified_frontend": {
+    "landing-page renders": "PASS",
+    "landing-heading with 'End global unemployment' + gradient": "PASS",
+    "cta-browse -> /US/jobs": "PASS",
+    "cta-register -> /auth/register": "PASS",
+    "landing-google-login pill contains google-login-button": "PASS",
+    "country-marquee has Brazil + India chips": "PASS",
+    "pillar-{inclusive,trust,borderless,credentials}": "PASS (4/4)",
+    "how-step-{0..3}": "PASS (4/4)",
+    "landing-signin-card + landing-google-login-primary + cta-register-inline -> /auth/register": "PASS",
+    "cta-register-bottom -> /auth/register, cta-browse-bottom -> /US/jobs": "PASS",
+    "landing-google-login click navigates to https://auth.emergentagent.com/?redirect=<encoded /auth/callback>": "PASS",
+    "landing-google-login-primary click navigates to auth.emergentagent.com": "PASS",
+    "/auth/login page google-login-button (form variant) navigates to auth.emergentagent.com": "PASS",
+    "when authenticated (JWTs injected via /api/auth/login/): landing-signin-card + landing-google-login + landing-google-login-primary all hidden": "PASS"
+  },
+  "rca of the issue": {
+    "issue_1": {
+      "symptom": "GET https://<preview>/api/health/ returned HTTP 400 DisallowedHost.",
+      "root_cause": "backend/.env had no ALLOWED_HOSTS; config/settings.py falls back to ['localhost','127.0.0.1']. The forwarded host from Cloudflare ('7a29f715-...preview.emergentagent.com') was rejected.",
+      "fix": "Added ALLOWED_HOSTS=localhost,127.0.0.1,7a29f715-0a3a-453f-a736-5a71dd94bc81.preview.emergentagent.com,.preview.emergentagent.com,.preview.emergentcf.cloud to /app/backend/.env and restarted backend."
+    },
+    "issue_2": {
+      "symptom": "Login form on /auth/login showed 'Something went wrong'; authenticated landing state never triggered even after injecting valid JWTs.",
+      "root_cause": "No /app/frontend/.env existed, so import.meta.env.VITE_API_URL was undefined and client.ts fell back to 'http://localhost:8000/api'. From the browser at the preview URL that host is unreachable, so every axios call (including /auth/me/) failed silently, keeping isAuthenticated=false.",
+      "fix": "Created /app/frontend/.env with VITE_API_URL=https://<preview-host>/api and restarted frontend. Verified /auth/me/ requests now hit the preview host and the landing page correctly hides the sign-in card when authed."
+    }
+  }
+}

@@ -1,6 +1,11 @@
 import { useTranslation } from "react-i18next";
 
-export function GoogleLoginButton() {
+interface GoogleLoginButtonProps {
+  /** "form" (default) matches auth pages full-width white block; "pill" is compact for landing */
+  variant?: "form" | "pill";
+}
+
+export function GoogleLoginButton({ variant = "form" }: GoogleLoginButtonProps) {
   const { t } = useTranslation();
 
   function handleGoogleLogin() {
@@ -11,12 +16,17 @@ export function GoogleLoginButton() {
     )}`;
   }
 
+  const className =
+    variant === "pill"
+      ? "btn-google-pill"
+      : "w-full inline-flex items-center justify-center gap-3 rounded-lg border border-slate-700 bg-white px-4 py-2.5 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-joxera-500";
+
   return (
     <button
       type="button"
       onClick={handleGoogleLogin}
       data-testid="google-login-button"
-      className="w-full inline-flex items-center justify-center gap-3 rounded-lg border border-slate-700 bg-white px-4 py-2.5 text-sm font-medium text-slate-900 transition-colors hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-joxera-500"
+      className={className}
     >
       <svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true">
         <path

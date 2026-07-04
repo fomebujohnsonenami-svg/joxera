@@ -32,7 +32,7 @@
   "seed_data_creation": "Registration test creates ephemeral users prefixed 'TEST_<uuid>@joxera.test'. No cleanup implemented — they are harmless and unique per run.",
   "retest_needed": false,
   "should_main_agent_self_test": true,
-  "context_for_next_testing_agent": "Backend base URL: https://06f8fba5-b5a0-418f-97d9-f82b39c7023c.preview.emergentagent.com (also lives in frontend/.env VITE_API_URL). Backend tests in /app/backend/tests/test_auth_endpoints.py can be run with: `cd /app/backend && python -m pytest tests/test_auth_endpoints.py -v`. Google OAuth cannot be end-to-end tested (real Google popup). We assert only the endpoint contract (400/401) and that the frontend button redirects to https://auth.emergentagent.com/?redirect=<origin>/auth/callback. The email-login → /dashboard/talent flow works.",
+  "context_for_next_testing_agent": "Backend base URL: https://dynamic-login-page.preview.emergentagent.com (also lives in frontend/.env VITE_API_URL). Backend tests in /app/backend/tests/test_auth_endpoints.py can be run with: `cd /app/backend && python -m pytest tests/test_auth_endpoints.py -v`. Google OAuth cannot be end-to-end tested (real Google popup). We assert only the endpoint contract (400/401) and that the frontend button redirects to https://auth.emergentagent.com/?redirect=<origin>/auth/callback. The email-login → /dashboard/talent flow works.",
   "verified_contracts": {
     "GET /api/health/": "200 {status:ok}",
     "POST /api/auth/login/ (valid)": "200 {access, refresh, user}",
