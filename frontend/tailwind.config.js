@@ -21,6 +21,9 @@ export default {
         "blue-bright": "var(--color-blue-bright)",
         accent: "var(--color-accent)",
         emerald: "var(--color-emerald)",
+        warm: "var(--color-warm)",
+        coral: "var(--color-coral)",
+        violet: "var(--color-violet)",
         surface: {
           primary: "var(--bg-primary)",
           secondary: "var(--bg-secondary)",
