@@ -88,6 +88,25 @@ class User(AbstractUser):
         super().save(*args, **kwargs)
 
 
+class EmergentSession(models.Model):
+    """Session issued after Emergent-managed Google OAuth login."""
+
+    user = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        related_name="emergent_sessions",
+    )
+    session_token = models.CharField(max_length=512, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+
+    class Meta:
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        return f"EmergentSession({self.user.handle})"
+
+
 class KYBStatus(models.TextChoices):
     UNVERIFIED = "unverified", "Unverified"
     PENDING = "pending", "Pending"

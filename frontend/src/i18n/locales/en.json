@@ -44,7 +44,11 @@
     "submitRegister": "Create account",
     "noAccount": "Don't have an account?",
     "hasAccount": "Already have an account?",
-    "kycNotice": "After registration you will be guided through identity verification (KYC) before accessing listings."
+    "kycNotice": "After registration you will be guided through identity verification (KYC) before accessing listings.",
+    "continueWithGoogle": "Continue with Google",
+    "orDivider": "or",
+    "callbackProcessing": "Signing you in…",
+    "callbackError": "Google sign-in failed. Please try again."
   },
   "jobs": {
     "feedTitle": "Jobs in {{country}}",

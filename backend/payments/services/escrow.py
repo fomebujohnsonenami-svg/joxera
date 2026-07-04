@@ -187,7 +187,11 @@ def release_escrow(escrow_id: int) -> Escrow:
     RELEASED → credit talent wallet.
     Requires both parties signed off; idempotent on already-released escrows.
     """
-    escrow = Escrow.objects.select_for_update().select_related("listing", "talent").get(pk=escrow_id)
+    escrow = (
+        Escrow.objects.select_for_update(of=("self",))
+        .select_related("listing", "talent")
+        .get(pk=escrow_id)
+    )
 
     if escrow.state == EscrowState.RELEASED:
         return escrow

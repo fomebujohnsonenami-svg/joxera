@@ -2,6 +2,7 @@ import { FormEvent, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { Button } from "../../components/ui/Button";
+import { GoogleLoginButton } from "../../components/auth/GoogleLoginButton";
 import { useAuth } from "../../hooks/useAuth";
 
 export function LoginPage() {
@@ -67,6 +68,14 @@ export function LoginPage() {
           {t("auth.submitLogin")}
         </Button>
       </form>
+
+      <div className="flex items-center gap-3 my-6">
+        <div className="h-px flex-1 bg-slate-800" />
+        <span className="text-xs text-slate-500">{t("auth.orDivider")}</span>
+        <div className="h-px flex-1 bg-slate-800" />
+      </div>
+
+      <GoogleLoginButton />
 
       <p className="text-sm text-slate-500 mt-6 text-center">
         {t("auth.noAccount")}{" "}

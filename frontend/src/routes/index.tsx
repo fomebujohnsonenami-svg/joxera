@@ -6,6 +6,7 @@ import { DashboardLayout } from "../layouts/DashboardLayout";
 import { RootLayout } from "../layouts/RootLayout";
 import { LoginPage } from "../pages/auth/LoginPage";
 import { RegisterPage } from "../pages/auth/RegisterPage";
+import { AuthCallbackPage } from "../pages/auth/AuthCallbackPage";
 import { EmployerDashboardPage } from "../pages/dashboard/EmployerDashboardPage";
 import { TalentDashboardPage } from "../pages/dashboard/TalentDashboardPage";
 import { WalletDashboardPage } from "../pages/dashboard/WalletDashboardPage";
@@ -30,6 +31,7 @@ export const router = createBrowserRouter([
         children: [
           { path: "login", element: <LoginPage /> },
           { path: "register", element: <RegisterPage /> },
+          { path: "callback", element: <AuthCallbackPage /> },
         ],
       },
 

@@ -43,7 +43,11 @@
     "submitRegister": "Crear cuenta",
     "noAccount": "¿No tienes cuenta?",
     "hasAccount": "¿Ya tienes cuenta?",
-    "kycNotice": "Después del registro completarás la verificación de identidad (KYC)."
+    "kycNotice": "Después del registro completarás la verificación de identidad (KYC).",
+    "continueWithGoogle": "Continuar con Google",
+    "orDivider": "o",
+    "callbackProcessing": "Iniciando sesión…",
+    "callbackError": "Error al iniciar sesión con Google. Inténtalo de nuevo."
   },
   "jobs": {
     "feedTitle": "Empleos en {{country}}",

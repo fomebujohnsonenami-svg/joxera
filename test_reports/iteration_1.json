@@ -1,0 +1,46 @@
+{
+  "summary": "Full backend + frontend regression for Joxera auth (JWT + Emergent Google OAuth). 8/8 pytest backend cases pass; all 5 required frontend flows verified via Playwright on the live preview URL.",
+  "backend_issues": {
+    "critical": [],
+    "minor": []
+  },
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Auth pages (LoginPage / RegisterPage)", "issues": ["Non-blocking runtime error surfaced via window.onerror: 'Incorrect locale information provided' (Intl formatter called with an unsupported/empty locale). Does not break the flow but pollutes the console and Sentry-like listeners; likely from i18n / Intl.NumberFormat/DateTimeFormat with a bad locale string. Recommend guarding with try/catch and falling back to 'en-US'."]}
+    ]
+  },
+  "test_report_links": [
+    "/app/backend/tests/test_auth_endpoints.py",
+    "/app/test_reports/pytest/pytest_results.xml"
+  ],
+  "action_items": [
+    "Investigate and fix the 'Incorrect locale information provided' pageerror thrown on the /auth/login and /auth/register pages (likely Intl usage with an empty/invalid locale from i18n)."
+  ],
+  "critical_code_review_comments": [
+    "GoogleSessionView sets cookie 'session_token' with samesite='none' and secure=True unconditionally — fine on the HTTPS preview, but will silently be dropped in local http:// dev; consider guarding with request.is_secure().",
+    "GoogleSessionView creates a new EmergentSession row on every call (no dedupe/cleanup); could accumulate rows on repeat logins. Consider upsert-by-session_token or a periodic cleanup task.",
+    "Frontend uses VITE_API_URL (not REACT_APP_BACKEND_URL) — that is fine for a Vite app, but the platform convention/testing rules reference REACT_APP_BACKEND_URL; documenting the mapping in README avoids confusion.",
+    "AuthCallbackPage stores JWTs in localStorage (XSS-vulnerable); acceptable given existing app design but worth noting."
+  ],
+  "updated_files": [
+    "/app/backend/tests/test_auth_endpoints.py"
+  ],
+  "success_rate": {"backend": "100%", "frontend": "100%"},
+  "test_credentials": "talent.demo@joxera.test / DemoPass123! (talent), employer.demo@joxera.test / DemoPass123! (employer). Same as /app/memory/test_credentials.md.",
+  "seed_data_creation": "Registration test creates ephemeral users prefixed 'TEST_<uuid>@joxera.test'. No cleanup implemented — they are harmless and unique per run.",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Backend base URL: https://06f8fba5-b5a0-418f-97d9-f82b39c7023c.preview.emergentagent.com (also lives in frontend/.env VITE_API_URL). Backend tests in /app/backend/tests/test_auth_endpoints.py can be run with: `cd /app/backend && python -m pytest tests/test_auth_endpoints.py -v`. Google OAuth cannot be end-to-end tested (real Google popup). We assert only the endpoint contract (400/401) and that the frontend button redirects to https://auth.emergentagent.com/?redirect=<origin>/auth/callback. The email-login → /dashboard/talent flow works.",
+  "verified_contracts": {
+    "GET /api/health/": "200 {status:ok}",
+    "POST /api/auth/login/ (valid)": "200 {access, refresh, user}",
+    "POST /api/auth/login/ (wrong pw)": "401",
+    "POST /api/auth/register/": "201 {access, refresh, user}",
+    "GET /api/auth/me/ (no token)": "401",
+    "GET /api/auth/me/ (Bearer)": "200 {email, handle, role}",
+    "POST /api/auth/google/session/ (no header)": "400 {detail:'Missing session id.'}",
+    "POST /api/auth/google/session/ (bogus header)": "401 {detail:'Invalid or expired session.'}"
+  }
+}

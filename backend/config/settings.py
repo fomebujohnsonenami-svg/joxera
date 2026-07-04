@@ -16,6 +16,9 @@ ALLOWED_HOSTS = [
     if h.strip()
 ]
 
+# Behind the preview/production reverse proxy, honour the forwarded host header.
+USE_X_FORWARDED_HOST = True
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -194,6 +197,11 @@ POW_SIGNING_PRIVATE_KEY = os.environ.get("POW_SIGNING_PRIVATE_KEY", "")
 POW_SIGNING_PUBLIC_KEY = os.environ.get("POW_SIGNING_PUBLIC_KEY", "")
 
 ALLOW_KYC_SIMULATION = os.environ.get("ALLOW_KYC_SIMULATION", "False").lower() in ("true", "1", "yes")
+
+EMERGENT_AUTH_SESSION_URL = os.environ.get(
+    "EMERGENT_AUTH_SESSION_URL",
+    "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
+)
 
 # Production security hardening
 if DJANGO_ENV == "production" or (not DEBUG and DJANGO_ENV != "test"):

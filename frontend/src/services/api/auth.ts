@@ -22,6 +22,15 @@ export const authApi = {
     return data;
   },
 
+  async googleSession(
+    sessionId: string
+  ): Promise<AuthTokens & { user: User }> {
+    const { data } = await apiClient.post("/auth/google/session/", null, {
+      headers: { "X-Session-ID": sessionId },
+    });
+    return data;
+  },
+
   async logout(refresh: string): Promise<void> {
     await apiClient.post("/auth/logout/", { refresh });
   },

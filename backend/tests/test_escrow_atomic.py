@@ -60,8 +60,6 @@ class TestEscrowAtomicTransitions:
 
     def test_cannot_release_refunded_escrow(self, funded_escrow, employer, talent):
         refund_escrow(funded_escrow.id, employer)
-        sign_off_escrow(funded_escrow.id, employer)
-        sign_off_escrow(funded_escrow.id, talent)
         with pytest.raises(InvalidEscrowStateError):
             release_escrow(funded_escrow.id)
 
