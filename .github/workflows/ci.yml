@@ -13,20 +13,6 @@ env:
 jobs:
   backend-lint-test:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgis/postgis:16-3.4
-        env:
-          POSTGRES_DB: joxera_test
-          POSTGRES_USER: joxera
-          POSTGRES_PASSWORD: joxera
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U joxera -d joxera_test"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
 
     defaults:
       run:
@@ -34,6 +20,21 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Start PostGIS + pgvector database
+        run: |
+          docker build -t joxera-db:ci -f docker/db/Dockerfile docker/db
+          docker run -d --name postgres \
+            -e POSTGRES_DB=joxera_test \
+            -e POSTGRES_USER=joxera \
+            -e POSTGRES_PASSWORD=joxera \
+            -p 5432:5432 \
+            -v "${{ github.workspace }}/docker/db/init:/docker-entrypoint-initdb.d:ro" \
+            joxera-db:ci
+          for i in $(seq 1 30); do
+            docker exec postgres pg_isready -U joxera -d joxera_test && break
+            sleep 2
+          done
 
       - uses: actions/setup-python@v5
         with:
@@ -47,8 +48,7 @@ jobs:
           sudo apt-get install -y gdal-bin libgdal-dev libgeos-dev
 
       - name: Install Python dependencies
-        run: |
-          pip install -r requirements-dev.txt
+        run: pip install -r requirements-dev.txt
 
       - name: Ruff lint
         run: ruff check .
@@ -81,6 +81,10 @@ jobs:
           GEOS_LIBRARY_PATH: /usr/lib/x86_64-linux-gnu/libgeos_c.so
           ALLOW_KYC_SIMULATION: "True"
         run: pytest --cov=. --cov-report=term-missing
+
+      - name: Stop database
+        if: always()
+        run: docker rm -f postgres || true
 
   frontend-lint-build:
     runs-on: ubuntu-latest
@@ -148,14 +152,15 @@ jobs:
 
       - name: Start stack
         working-directory: docker
+        env:
+          GEMINI_API_KEY: ""
+          ALLOW_KYC_SIMULATION: "True"
         run: |
-          cp .env.prod.example .env.prod || true
-          echo "SECRET_KEY=ci-e2e-secret-key" >> .env.prod
-          echo "POSTGRES_PASSWORD=joxera" >> .env.prod
-          echo "ALLOW_KYC_SIMULATION=True" >> .env.prod
-          echo "SECURE_SSL_REDIRECT=False" >> .env.prod
           docker compose -f docker-compose.yml up -d --build db redis backend celery
-          sleep 15
+          for i in $(seq 1 60); do
+            curl -sf http://localhost:8000/api/health/ && break
+            sleep 2
+          done
           docker compose -f docker-compose.yml exec -T backend python manage.py migrate --noinput
 
       - uses: actions/setup-node@v4
@@ -175,8 +180,7 @@ jobs:
           VITE_API_URL: http://localhost:8000/api
 
       - name: Wait for services
-        run: |
-          npx wait-on http://localhost:8000/api/health/ http://localhost:5173 --timeout 120000
+        run: npx wait-on http://localhost:5173 --timeout 120000
 
       - name: Run Playwright E2E
         env:

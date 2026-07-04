@@ -1,7 +1,6 @@
 from decimal import Decimal
 
 import pytest
-from django.db import connection
 
 from payments.models import EscrowState, Wallet, WalletTransaction
 from payments.services.escrow import (

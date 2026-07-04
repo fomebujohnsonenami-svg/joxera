@@ -1,13 +1,12 @@
 from decimal import Decimal
 
 import pytest
-from django.contrib.gis.geos import Point
 from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from core.models import PaymentRail
 from jobs.models import Listing, ListingMode, ListingStatus, ListingTier
-from payments.models import Escrow, EscrowState, Wallet
+from payments.models import Escrow, Wallet
 from users.models import KYCStatus, User, UserRole
 
 

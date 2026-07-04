@@ -13,8 +13,6 @@ from django.utils import timezone
 
 from core.models import CountryConfig, PaymentRail
 from jobs.models import Application, ApplicationStatus, Listing
-from users.models import User
-
 from payments.models import (
     Escrow,
     EscrowState,
@@ -23,6 +21,7 @@ from payments.models import (
     Wallet,
     WalletTransaction,
 )
+from users.models import User
 
 logger = logging.getLogger(__name__)
 

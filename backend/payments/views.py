@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from jobs.models import Listing
 from users.models import User
 
-from .models import Escrow, EscrowState, Wallet, WalletTransaction
+from .models import Escrow, EscrowState, WalletTransaction
 from .providers.registry import get_provider_by_name, get_provider_for_rail
 from .serializers import (
     CreateEscrowSerializer,

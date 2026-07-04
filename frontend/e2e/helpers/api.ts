@@ -131,7 +131,3 @@ export async function runEscrowFlow(opts: {
   }
   return escrowId;
 }
-
-export async function seedEmployerWalletViaAdmin(_employerHandle: string): Promise<void> {
-  // Wallet seeding handled in test via direct DB or fund path
-}

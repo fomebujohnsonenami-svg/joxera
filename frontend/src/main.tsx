@@ -14,8 +14,9 @@ registerSW({
     console.info("[Joxera PWA] App ready for offline use.");
   },
   onRegisteredSW(_swUrl, registration) {
-    registration &&
+    if (registration) {
       setInterval(() => registration.update(), 60 * 60 * 1000);
+    }
   },
 });
 

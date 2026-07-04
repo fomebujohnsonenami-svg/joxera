@@ -1,4 +1,3 @@
-from datetime import timedelta
 
 from django.conf import settings
 from rest_framework import status
@@ -8,7 +7,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenRefreshView
 
-from users.models import KYCStatus, User, UserRole
+from users.models import KYCStatus, User
 
 from .serializers import RegisterSerializer, UserPublicSerializer
 
