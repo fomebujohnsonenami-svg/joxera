@@ -1,0 +1,105 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "jobs": "Emplois",
+    "login": "Connexion",
+    "register": "S'inscrire",
+    "talentDashboard": "Tableau talent",
+    "employerDashboard": "Tableau employeur",
+    "logout": "Déconnexion"
+  },
+  "landing": {
+    "tagline": "Emploi sans frontières",
+    "title": "Mettre fin au chômage mondial",
+    "subtitle": "Une place de marché basée sur la confiance mêlant contrats tech et métiers locaux.",
+    "ctaBrowse": "Parcourir les emplois",
+    "ctaRegister": "Créer un compte vérifié",
+    "pillars": {
+      "inclusive": "Inclusif",
+      "trust": "Confiance d'abord",
+      "borderless": "Sans frontières",
+      "credentials": "Preuve de travail"
+    },
+    "pillarDescriptions": {
+      "inclusive": "Développeurs et artisans locaux, équitablement servis.",
+      "trust": "Identité vérifiée avant toute interaction.",
+      "borderless": "195+ pays via codes ISO 3166-1 alpha-2.",
+      "credentials": "Chaque mission devient une credential signée."
+    }
+  },
+  "auth": {
+    "loginTitle": "Bon retour",
+    "loginSubtitle": "Connectez-vous pour accéder aux annonces vérifiées.",
+    "registerTitle": "Rejoindre Joxera",
+    "registerSubtitle": "Créez votre compte et complétez le KYC.",
+    "email": "E-mail",
+    "password": "Mot de passe",
+    "handle": "Identifiant",
+    "country": "Pays",
+    "role": "Je suis",
+    "roleTalent": "Chercheur d'emploi",
+    "roleEmployer": "Employeur",
+    "submitLogin": "Se connecter",
+    "submitRegister": "Créer un compte",
+    "noAccount": "Pas de compte ?",
+    "hasAccount": "Déjà un compte ?",
+    "kycNotice": "Après l'inscription, vous passerez par la vérification d'identité (KYC)."
+  },
+  "jobs": {
+    "feedTitle": "Emplois en {{country}}",
+    "feedSubtitle": "Annonces vérifiées uniquement.",
+    "empty": "Aucun emploi dans ce pays.",
+    "loading": "Chargement…",
+    "error": "Impossible de charger les emplois.",
+    "viewDetails": "Voir les détails",
+    "category": {
+      "tech": "Tech",
+      "vocational": "Vocational",
+      "hybrid": "Hybride"
+    },
+    "detail": {
+      "back": "Retour",
+      "postedBy": "Publié par",
+      "verifiedEmployer": "Employeur vérifié",
+      "apply": "Postuler (KYC requis)"
+    }
+  },
+  "dashboard": {
+    "talent": {
+      "title": "Tableau talent",
+      "wallet": "Solde portefeuille",
+      "matches": "Correspondances actives",
+      "references": "Références",
+      "credentials": "Credentials"
+    },
+    "employer": {
+      "title": "Tableau employeur",
+      "postJob": "Publier une offre",
+      "escrow": "Solde séquestre",
+      "activeJobs": "Offres actives",
+      "hires": "Embauches récentes",
+      "pending": "Candidatures en attente"
+    }
+  },
+  "profile": {
+    "verified": "Vérifié",
+    "unverified": "Non vérifié",
+    "credentials": "Credentials",
+    "references": "Références",
+    "noCredentials": "Aucune credential.",
+    "noReferences": "Aucune référence."
+  },
+  "common": {
+    "loading": "Chargement…",
+    "error": "Une erreur est survenue.",
+    "retry": "Réessayer",
+    "offline": "Hors ligne. Données en cache affichées.",
+    "reconnected": "Connexion rétablie.",
+    "backHome": "Retour à l'accueil"
+  },
+  "errors": {
+    "invalidCountry": "Code pays invalide.",
+    "unauthorized": "Veuillez vous connecter.",
+    "notFound": "Page introuvable."
+  }
+}

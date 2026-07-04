@@ -1,0 +1,124 @@
+{
+  "nav": {
+    "home": "Home",
+    "jobs": "Jobs",
+    "login": "Log in",
+    "register": "Register",
+    "talentDashboard": "Talent Dashboard",
+    "employerDashboard": "Employer Dashboard",
+    "wallet": "Wallet",
+    "logout": "Log out"
+  },
+  "landing": {
+    "tagline": "Borderless Employment",
+    "title": "End global unemployment",
+    "subtitle": "A trust-first marketplace blending professional tech contracts with local vocational gigs — verified identity, global reach, and proof-of-work credentials.",
+    "ctaBrowse": "Browse jobs in your country",
+    "ctaRegister": "Create verified account",
+    "pillars": {
+      "inclusive": "Inclusive",
+      "trust": "Trust-first",
+      "borderless": "Borderless",
+      "credentials": "Proof-of-work"
+    },
+    "pillarDescriptions": {
+      "inclusive": "Corporate developers and local tradespeople, equally served.",
+      "trust": "Identity-verified before any listing interaction.",
+      "borderless": "195+ countries via ISO 3166-1 alpha-2 codes.",
+      "credentials": "Every completed job becomes a signed credential."
+    }
+  },
+  "auth": {
+    "loginTitle": "Welcome back",
+    "loginSubtitle": "Sign in to access verified listings and your dashboard.",
+    "registerTitle": "Join Joxera",
+    "registerSubtitle": "Create your account and complete KYC to interact with listings.",
+    "email": "Email",
+    "password": "Password",
+    "handle": "Handle",
+    "country": "Country",
+    "role": "I am a",
+    "roleTalent": "Job seeker",
+    "roleEmployer": "Employer",
+    "submitLogin": "Sign in",
+    "submitRegister": "Create account",
+    "noAccount": "Don't have an account?",
+    "hasAccount": "Already have an account?",
+    "kycNotice": "After registration you will be guided through identity verification (KYC) before accessing listings."
+  },
+  "jobs": {
+    "feedTitle": "Jobs in {{country}}",
+    "feedSubtitle": "Verified listings only — identity required to apply.",
+    "empty": "No jobs found in this country yet.",
+    "loading": "Loading jobs…",
+    "error": "Could not load jobs. Showing cached results if available.",
+    "viewDetails": "View details",
+    "category": {
+      "tech": "Tech",
+      "vocational": "Vocational",
+      "hybrid": "Hybrid"
+    },
+    "detail": {
+      "back": "Back to feed",
+      "postedBy": "Posted by",
+      "verifiedEmployer": "Verified employer",
+      "apply": "Apply (KYC required)"
+    }
+  },
+  "dashboard": {
+    "talent": {
+      "title": "Talent Dashboard",
+      "wallet": "Wallet balance",
+      "matches": "Active matches",
+      "references": "References",
+      "credentials": "Proof-of-work credentials"
+    },
+    "employer": {
+      "title": "Employer Dashboard",
+      "postJob": "Post a job",
+      "escrow": "Escrow balance",
+      "activeJobs": "Active listings",
+      "hires": "Recent hires",
+      "pending": "Pending applications"
+    }
+  },
+  "wallet": {
+    "title": "Wallet",
+    "subtitle": "Multi-currency balance, escrow lifecycle, and transaction history.",
+    "balanceSection": "Wallet balance",
+    "escrowTimeline": "Escrow lifecycle",
+    "transactions": "Transaction history"
+  },
+  "profile": {
+    "verified": "Verified",
+    "unverified": "Unverified",
+    "credentials": "Proof-of-work credentials",
+    "references": "References",
+    "noCredentials": "No credentials yet.",
+    "noReferences": "No references yet.",
+    "signedBy": "Signed by @{{employer}}",
+    "completed": "Completed",
+    "signatureHash": "Signature hash",
+    "verifySignature": "Verify Ed25519 signature",
+    "verifying": "Verifying…",
+    "verifiedCredential": "Cryptographically verified",
+    "invalidCredential": "Verification failed",
+    "immutable": "Immutable on-chain record",
+    "timelineTitle": "Resume-gap eraser",
+    "timelineDescription": "Each block is a signed proof-of-work credential minted when escrow is released.",
+    "credentialsTimeline": "Proof-of-work timeline"
+  },
+  "common": {
+    "loading": "Loading…",
+    "error": "Something went wrong.",
+    "retry": "Retry",
+    "offline": "You are offline. Showing cached data where available.",
+    "reconnected": "Connection restored.",
+    "backHome": "Back to home"
+  },
+  "errors": {
+    "invalidCountry": "Invalid country code. Use ISO 3166-1 alpha-2 (e.g. US, NG).",
+    "unauthorized": "Please sign in to continue.",
+    "notFound": "Page not found."
+  }
+}

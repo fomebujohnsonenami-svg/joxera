@@ -1,0 +1,20 @@
+# Joxera Backend — Django 5.x + DRF + GeoDjango
+Django>=5.0,<6.0
+djangorestframework>=3.15,<4.0
+djangorestframework-gis>=1.0,<2.0
+django-cors-headers>=4.3,<5.0
+django-filter>=24.0,<25.0
+psycopg2-binary>=2.9,<3.0
+celery[redis]>=5.3,<6.0
+redis>=5.0,<6.0
+python-dotenv>=1.0,<2.0
+gunicorn>=22.0,<23.0
+Pillow>=10.0,<11.0
+pgvector>=0.3.6,<0.4.0
+langchain-core>=0.3.0,<0.4.0
+langchain-google-genai>=2.0.0,<3.0.0
+google-generativeai>=0.8.0,<1.0.0
+stripe>=10.0,<12.0
+httpx>=0.27,<0.29
+djangorestframework-simplejwt>=5.3,<6.0
+PyNaCl>=1.5,<2.0

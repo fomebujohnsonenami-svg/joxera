@@ -1,0 +1,118 @@
+services:
+  db:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    container_name: joxera-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: joxera
+      POSTGRES_USER: joxera
+      POSTGRES_PASSWORD: joxera
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U joxera -d joxera"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  redis:
+    image: redis:7-alpine
+    container_name: joxera-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: joxera-backend
+    restart: unless-stopped
+    command: gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3 --reload
+    environment:
+      DEBUG: "True"
+      SECRET_KEY: dev-secret-key-change-in-production
+      ALLOWED_HOSTS: localhost,127.0.0.1,backend
+      POSTGRES_DB: joxera
+      POSTGRES_USER: joxera
+      POSTGRES_PASSWORD: joxera
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      REDIS_URL: redis://redis:6379/0
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      ALLOW_KYC_SIMULATION: ${ALLOW_KYC_SIMULATION:-True}
+      CORS_ALLOWED_ORIGINS: http://localhost:5173,http://127.0.0.1:5173,http://frontend:5173
+      GDAL_LIBRARY_PATH: /usr/lib/x86_64-linux-gnu/libgdal.so
+      GEOS_LIBRARY_PATH: /usr/lib/x86_64-linux-gnu/libgeos_c.so
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../backend:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    entrypoint: ["/bin/bash", "/app/entrypoint.sh"]
+
+  celery:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: joxera-celery
+    restart: unless-stopped
+    command: celery -A config worker --loglevel=info
+    environment:
+      DEBUG: "True"
+      SECRET_KEY: dev-secret-key-change-in-production
+      POSTGRES_DB: joxera
+      POSTGRES_USER: joxera
+      POSTGRES_PASSWORD: joxera
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      REDIS_URL: redis://redis:6379/0
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      GDAL_LIBRARY_PATH: /usr/lib/x86_64-linux-gnu/libgdal.so
+      GEOS_LIBRARY_PATH: /usr/lib/x86_64-linux-gnu/libgeos_c.so
+    volumes:
+      - ../backend:/app
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      backend:
+        condition: service_started
+
+  frontend:
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    container_name: joxera-frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_URL: http://localhost:8000/api
+    ports:
+      - "5173:5173"
+    volumes:
+      - ../frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  redis_data:
